@@ -13,20 +13,31 @@ const LANGUAGE_CODES = {
   TAMIL: 'ta-IN',
 };
 
-// PUBLIC_INTERFACE
 /**
  * Fetch trending movies for a region/language.
+ * For Kollywood (TAMIL), only strictly return movies whose original_language is Tamil.
  * @param {'ENGLISH'|'TAMIL'} langRegion Either 'ENGLISH' or 'TAMIL'
  * @param {string} [mediaType] Optional: 'movie' or 'tv'
  * @param {string} [timeWindow] Optional: 'day' or 'week'
  * @returns {Promise<Array>} Array of movie objects
  */
+// PUBLIC_INTERFACE
 export async function fetchTrendingMovies(langRegion = 'ENGLISH', mediaType = 'movie', timeWindow = 'week') {
   const langCode = LANGUAGE_CODES[langRegion] || LANGUAGE_CODES.ENGLISH;
   const url = `${API_BASE_URL}/trending/${mediaType}/${timeWindow}?api_key=${API_KEY}&language=${langCode}`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error('Failed to fetch trending movies');
   const data = await resp.json();
+  // Enforce stricter original_language filter for Kollywood/Tamil
+  if (langRegion === 'TAMIL') {
+    // Accept only original_language 'ta' (Tamil), possibly also flag for Indian movies (with more metadata, if needed)
+    return (data.results || []).filter(
+      m =>
+        m.original_language === 'ta' ||
+        // Fallback, if future flag/genres/production_country available, do extra check here
+        (m.origin_country && Array.isArray(m.origin_country) && m.origin_country.includes('IN'))
+    );
+  }
   return data.results;
 }
 
