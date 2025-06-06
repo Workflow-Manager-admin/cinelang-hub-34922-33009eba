@@ -1,0 +1,23 @@
+{
+  "steps": [
+    {
+      "description": "Audit and update all Kollywood (language: 'TAMIL') games/components to ensure only Tamil movie data/hints are included.",
+      "details": "Identify all games/components invoked in KollywoodSection. Update game logic and data in: GuessPosterGame, MovieIQChallenge, WhoPlayedGame, FilmDetective, ActorComboFinder, FirstMovieEverSeen, and GuessDirector for Tamil language. Remove any direct or fallback references to Hollywood/English movies (including hardcoded quizzes or demo data) in Tamil mode.",
+      "files_to_modify": [
+        "cine_lang_hub/src/components/games/GuessPosterGame.js",
+        "cine_lang_hub/src/components/games/MovieIQChallenge.js",
+        "cine_lang_hub/src/components/games/WhoPlayedGame.js",
+        "cine_lang_hub/src/components/games/FilmDetective.js",
+        "cine_lang_hub/src/components/games/ActorComboFinder.js",
+        "cine_lang_hub/src/components/games/FirstMovieEverSeen.js",
+        "cine_lang_hub/src/components/games/GuessDirector.js"
+      ],
+      "expected_changes": "All static demo questions/data, queries, and results (especially in MovieIQChallenge, WhoPlayedGame, GuessDirector) in Kollywood games use only original Tamil movies and personalities; direct or fallback references to Hollywood, dubbed, or unrelated content are removed. TMDb queries in games for TAMIL strictly filter for Tamil ('ta') original-language movies only."
+    }
+  ],
+  "assumptions": [
+    "Kollywood section is identified by language==='TAMIL' for all games/components",
+    "All game UI labels remain in English, but clues, answers, and movies will represent Tamil cinema only for Kollywood",
+    "TMDb API supports with_original_language='ta' for Tamil movie filtering"
+  ]
+}
