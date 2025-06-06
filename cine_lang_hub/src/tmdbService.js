@@ -1,4 +1,4 @@
-//
+// 
 // tmdbService.js
 //
 // Utility to interact with The Movie Database (TMDb) API
@@ -16,7 +16,7 @@ const LANGUAGE_CODES = {
 /**
  * PUBLIC_INTERFACE
  * Fetch trending movies for a region/language.
- * For Kollywood (TAMIL), only strictly return movies whose original_language is Tamil.
+ * For Kollywood (TAMIL), only strictly return movies whose original_language is Tamil (from TMDb trending endpoint).
  */
 export async function fetchTrendingMovies(langRegion = 'ENGLISH', mediaType = 'movie', timeWindow = 'week') {
   const langCode = LANGUAGE_CODES[langRegion] || LANGUAGE_CODES.ENGLISH;
@@ -24,9 +24,8 @@ export async function fetchTrendingMovies(langRegion = 'ENGLISH', mediaType = 'm
   const resp = await fetch(url);
   if (!resp.ok) throw new Error('Failed to fetch trending movies');
   const data = await resp.json();
-  // Enforce strict original_language=ta filter for Kollywood (TAMIL) section
+  // For Kollywood: strictly filter to original_language 'ta'
   if (langRegion === 'TAMIL') {
-    // Only movies where original_language is exactly 'ta'
     return (data.results || []).filter(
       m => m.original_language === 'ta'
     );
@@ -34,8 +33,8 @@ export async function fetchTrendingMovies(langRegion = 'ENGLISH', mediaType = 'm
   return data.results;
 }
 
-// PUBLIC_INTERFACE
 /**
+ * PUBLIC_INTERFACE
  * Search movies by query and region/language.
  * @param {string} query The search term (movie name, etc.)
  * @param {'ENGLISH'|'TAMIL'} langRegion Either 'ENGLISH' or 'TAMIL'
@@ -51,8 +50,8 @@ export async function searchMovies(query, langRegion = 'ENGLISH', page = 1) {
   return data.results;
 }
 
-// PUBLIC_INTERFACE
 /**
+ * PUBLIC_INTERFACE
  * Discover movies filtered by language (native-language resources).
  * @param {'ENGLISH'|'TAMIL'} langRegion Either 'ENGLISH' or 'TAMIL'
  * @param {Object} [options] Optional filtering options: { sort_by, year, genre }
@@ -80,8 +79,8 @@ export async function discoverMovies(langRegion = 'ENGLISH', options = {}) {
   return data.results;
 }
 
-// PUBLIC_INTERFACE
 /**
+ * PUBLIC_INTERFACE
  * Fetch movie details by TMDb movie ID and region/language.
  * @param {number|string} movieId
  * @param {'ENGLISH'|'TAMIL'} langRegion
@@ -95,40 +94,5 @@ export async function getMovieDetails(movieId, langRegion = 'ENGLISH') {
   return resp.json();
 }
 
-// PUBLIC_INTERFACE
-/**
- * Fetch prioritized Kollywood trending titles, searching TMDb for each one (Tamil language), else returns placeholders if not present.
- * Used for Trending Now section in Kollywood (TAMIL) column only.
- * @param {string[]} titles  Array of prioritized Tamil movie titles (e.g., ['Thug Life', ...])
- * @param {object} [placeholderProps] Optional props to use on fallback (default: adds title and 'Coming Soon')
- * @returns {Promise<Array>} Ordered list of up to titles.length TMDb movie objects (movie or placeholder)
- */
-export async function getKollywoodPriorityTrending(titles, placeholderProps = {}) {
-  const results = [];
-  for (const title of titles) {
-    let found = [];
-    try {
-      found = await searchMovies(title, 'TAMIL');
-    } catch { found = []; }
-    // Exact match preferred, fallback to contains substring (Tamil only)
-    let movie = (
-      found.find(m => (m.title || m.name || '').trim().toLowerCase() === title.trim().toLowerCase()) ||
-      found.find(m => (m.title || m.name || '').toLowerCase().includes(title.trim().toLowerCase()))
-    );
-    if (movie) {
-      results.push(movie);
-    } else {
-      // Placeholder: structure nearly matches MovieCard
-      results.push({
-        id: 'placeholder-' + title.replace(/\\s/g, '-'),
-        title,
-        poster_path: null,
-        overview: 'Coming Soon',
-        release_date: '',
-        isPlaceholder: true,
-        ...placeholderProps
-      });
-    }
-  }
-  return results;
-}
+// (getKollywoodPriorityTrending has been removed; Kollywood "Trending Now" now only shows live trending Tamil movies directly from TMDb.)
+
