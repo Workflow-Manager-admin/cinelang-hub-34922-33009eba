@@ -26,21 +26,47 @@ function WhatToWatchColumn({ language }) {
     // Kollywood (Tamil): show prioritized trending with fallback for missing titles
     const PRIORITY_TITLES = ["Thug Life", "Retro", "Tourist Family"];
     if (language === "TAMIL") {
-      // Fetch both priority and normal trending, then merge for Trending Now
+      // For Kollywood, fetch priority & trending, then merge with robust deduplication (id/title) and pad to 6.
+      const PRIORITY_TITLES = ["Thug Life", "Retro", "Tourist Family"];
       Promise.all([
         getKollywoodPriorityTrending(PRIORITY_TITLES),
         fetchTrendingMovies("TAMIL")
       ]).then(([priorityMovies, trendingRest]) => {
-        // Remove any duplicates of the priority movies (by id or title) from trendingRest
-        const prioIds = new Set(priorityMovies.map(m => m && m.id));
-        const prioTitles = new Set(priorityMovies.map(m => (m.title || m.name || '').toLowerCase()));
-        const restFiltered = (trendingRest || []).filter(
-          m => m && !prioIds.has(m.id) && !prioTitles.has((m.title || m.name || '').toLowerCase())
-        );
-        setTrending([
-          ...priorityMovies,
-          ...restFiltered.slice(0, Math.max(0, 6 - priorityMovies.length))
-        ]);
+        // Deduplication helper: matches by TMDb id if possible, else by normalized title.
+        function getNormId(m) {
+          // Normalize id (string) if placeholder, number if TMDb movie; fallback to norm title
+          if (m && m.id) return String(m.id);
+          if (m && (m.title || m.name)) return "norm-title-" + (m.title || m.name).toLowerCase();
+          return "";
+        }
+        function getNormTitle(m) {
+          return (m && (m.title || m.name)) ? (m.title || m.name).toLowerCase() : "";
+        }
+
+        const prioMovies = Array.isArray(priorityMovies) ? priorityMovies : [];
+        const trending = Array.isArray(trendingRest) ? trendingRest : [];
+        // Collect the "ids" and titles of all priority cards
+        const prioIds = new Set();
+        const prioTitles = new Set();
+        prioMovies.forEach(m => {
+          if (m && m.id !== undefined) prioIds.add(String(m.id));
+          prioTitles.add(getNormTitle(m));
+        });
+
+        // Remove any movie from trendingRest that matches a prio card by id or norm title
+        const restFiltered = trending.filter(m => {
+          // Defensive: some TMDb movies use int id; placeholders use string id.
+          const idString = m?.id !== undefined ? String(m.id) : "";
+          const titleNorm = getNormTitle(m);
+          return !prioIds.has(idString) && !prioTitles.has(titleNorm);
+        });
+        // Now insert, up to limit (6), priority first (always in right order)
+        // Fill with rest up to 6 total cards.
+        const trendingFinal = [];
+        for (const pm of prioMovies) if (trendingFinal.length < 6) trendingFinal.push(pm);
+        for (const tm of restFiltered) if (trendingFinal.length < 6) trendingFinal.push(tm);
+
+        setTrending(trendingFinal);
       }).finally(() => setLoading(false));
     } else {
       // Hollywood/English - normal trending logic
