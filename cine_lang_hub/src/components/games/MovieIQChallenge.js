@@ -1,45 +1,70 @@
 import React, { useState } from "react";
 import { ENGLISH_LABELS } from "../i18n";
 
-// Demo movie trivia Q&A (year/director -> movie)
-const QUESTIONS = [
+// Only Tamil (Kollywood) movie trivia for TA mode; English for Hollywood
+const QUESTIONS_EN = [
   {
     year: "1994",
     director: "Frank Darabont",
-    en: "The Shawshank Redemption",
-    ta: "ஷாவ்‌ஷேங்க் ரிடெம்ப்ஷன்"
-  },
-  {
-    year: "2018",
-    director: "Pa. Ranjith",
-    en: "Kaala",
-    ta: "காலா"
+    answer: "The Shawshank Redemption"
   },
   {
     year: "1997",
     director: "James Cameron",
-    en: "Titanic",
-    ta: "டைட்டானிக்"
+    answer: "Titanic"
   },
   {
-    year: "2000",
-    director: "Bala",
-    en: "Nandha",
-    ta: "நந்தா"
+    year: "2010",
+    director: "Christopher Nolan",
+    answer: "Inception"
+  },
+  {
+    year: "1994",
+    director: "Robert Zemeckis",
+    answer: "Forrest Gump"
   }
 ];
 
-// PUBLIC_INTERFACE
+// All must be original Kollywood (Tamil) cinema – no dubs/remakes
+const QUESTIONS_TA = [
+  {
+    year: "1994",
+    director: "கதிர்",
+    answer: "காதலர் தினம்"
+  },
+  {
+    year: "2016",
+    director: "சுதா கொங்கரா",
+    answer: "இறுதிச்சுற்று"
+  },
+  {
+    year: "2005",
+    director: "செல்வராகவன்",
+    answer: "புதுப்பேட்டை"
+  },
+  {
+    year: "1987",
+    director: "மணி ரத்னம்",
+    answer: "நாயகன்"
+  },
+  {
+    year: "2003",
+    director: "அமீர்",
+    answer: "ராமன் தேடி சேதுக்கை"
+  }
+];
+
 function MovieIQChallenge({ language, onClose }) {
   const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
-  const q = QUESTIONS[idx % QUESTIONS.length];
+  const questions = language === "TAMIL" ? QUESTIONS_TA : QUESTIONS_EN;
+  const q = questions[idx % questions.length];
 
   function handleSubmit(e) {
     e.preventDefault();
-    const correct = (language === "TAMIL" ? q.ta : q.en).toLowerCase();
+    const correct = (q.answer || "").toLowerCase();
     if (guess.trim().toLowerCase() === correct) {
       setResult("Correct!");
     } else {
@@ -74,7 +99,7 @@ function MovieIQChallenge({ language, onClose }) {
             Next
           </button>
           <div style={{ fontSize: 14, marginTop: 5, color: "#89ffe0" }}>
-            Answer: <b>{language === "TAMIL" ? q.ta : q.en}</b>
+            Answer: <b>{q.answer}</b>
           </div>
         </>
       )}

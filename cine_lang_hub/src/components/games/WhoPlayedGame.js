@@ -1,48 +1,59 @@
 import React, { useState } from "react";
 import { ENGLISH_LABELS } from "../i18n";
 
-// Sample demo character-actor data
-const QUESTIONS = [
+// All Kollywood originals for TA, never English characters in Tamil
+const QUESTIONS_EN = [
   {
     character: "Iron Man",
     answer: "Robert Downey Jr.",
-    ta_character: "ஐரன் மேன்",
-    ta_answer: "ராபர்ட் டவ்னி ஜூனியர்"
-  },
-  {
-    character: "Simran (Kannathil Muthamittal)",
-    answer: "P. S. Keerthana",
-    ta_character: "சிம்ரன் (கன்னத்தில் முத்தமிட்டால்)",
-    ta_answer: "பி. எஸ். கீர்த்தனா"
   },
   {
     character: "Harry Potter",
     answer: "Daniel Radcliffe",
-    ta_character: "ஹாரி பாட்டர்",
-    ta_answer: "டேனியல் ராட்கிளிப்"
   },
   {
-    character: "கபாலி",
-    answer: "ரஜினிகாந்த்",
-    ta_character: "கபாலி",
-    ta_answer: "ரஜினிகாந்த்"
-  }
+    character: "Forrest Gump",
+    answer: "Tom Hanks",
+  },
+  {
+    character: "Joker",
+    answer: "Joaquin Phoenix",
+  },
 ];
 
-// PUBLIC_INTERFACE
+const QUESTIONS_TA = [
+  {
+    character: "அருணாசலம் (இந்து பத்திரிகை)",
+    answer: "ரஜினிகாந்த்"
+  },
+  {
+    character: "அமுல்யா (96)",
+    answer: "திரிஷா"
+  },
+  {
+    character: "மகீந்திர வர்்மா (கமலர்)",
+    answer: "கமல் ஹாசன்"
+  },
+  {
+    character: "அஞ்சலி (அஞ்சலி)",
+    answer: "ஷமிலி"
+  },
+];
+
 function WhoPlayedGame({ language, onClose }) {
   const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
 
-  const q = QUESTIONS[idx % QUESTIONS.length];
-  const character = language === "TAMIL" ? q.ta_character : q.character;
-  const answer = language === "TAMIL" ? q.ta_answer : q.answer;
+  const questions = language === "TAMIL" ? QUESTIONS_TA : QUESTIONS_EN;
+  const q = questions[idx % questions.length];
+  const character = q.character;
+  const answer = q.answer;
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (guess.trim().toLowerCase() === answer.toLowerCase()) {
+    if (guess.trim().toLowerCase() === (answer || "").toLowerCase()) {
       setResult("Correct!");
     } else {
       setResult("Wrong!");

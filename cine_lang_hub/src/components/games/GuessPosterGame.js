@@ -12,10 +12,19 @@ function GuessPosterGame({ language, onClose }) {
   const [reveal, setReveal] = useState(false);
 
   useEffect(() => {
-    fetchTrendingMovies(language).then((arr) => {
-      let m = arr.filter((x) => x.poster_path).sort(() => 0.5 - Math.random())[0];
-      setMovie(m);
-    });
+    if (language === "TAMIL") {
+      // Only pick trending Tamil originals (TMDb query in Tamil filtering)
+      fetchTrendingMovies("TAMIL").then((arr) => {
+        // Filter to ensure original_language: 'ta'
+        let m = arr.filter((x) => x.poster_path && (x.original_language === "ta")).sort(() => 0.5 - Math.random())[0];
+        setMovie(m);
+      });
+    } else {
+      fetchTrendingMovies("ENGLISH").then((arr) => {
+        let m = arr.filter((x) => x.poster_path && (x.original_language === "en")).sort(() => 0.5 - Math.random())[0];
+        setMovie(m);
+      });
+    }
     setGuess(""); setResult(""); setReveal(false);
   }, [language]);
 

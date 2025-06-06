@@ -2,47 +2,61 @@ import React, { useState } from "react";
 import { ENGLISH_LABELS } from "../i18n";
 
 // Demo movie/director pairs
-const QUIZ = [
+const QUIZ_EN = [
   {
     movie: "Inception",
-    director: "Christopher Nolan",
-    ta_movie: "விக்ரம்",
-    ta_director: "லோகேஷ் கனகராஜ்"
+    director: "Christopher Nolan"
   },
   {
     movie: "Parasite",
-    director: "Bong Joon-ho",
-    ta_movie: "அசுரன்",
-    ta_director: "வெற்றிமாறன்"
+    director: "Bong Joon-ho"
   },
   {
     movie: "Forrest Gump",
-    director: "Robert Zemeckis",
-    ta_movie: "மெர்சல்",
-    ta_director: "அதLEE"
+    director: "Robert Zemeckis"
   },
   {
     movie: "The Godfather",
-    director: "Francis Ford Coppola",
-    ta_movie: "மாஸ்டர்",
-    ta_director: "லோகேஷ் கனகராஜ்"
+    director: "Francis Ford Coppola"
   }
 ];
 
-// PUBLIC_INTERFACE
+const QUIZ_TA = [
+  {
+    movie: "நாயகன்",
+    director: "மணி ரத்னம்"
+  },
+  {
+    movie: "கபாலி",
+    director: "பா. ரஞ்சித்"
+  },
+  {
+    movie: "அசுரன்",
+    director: "வெற்றிமாறன்"
+  },
+  {
+    movie: "விக்ரம்",
+    director: "லோகேஷ் கனகராஜ்"
+  },
+  {
+    movie: "மெர்சல்",
+    director: "அதLEE"
+  }
+];
+
 function GuessDirector({ language, onClose }) {
   const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
-  const q = QUIZ[idx % QUIZ.length];
-  // Only the movie and director fields may be in Tamil if language === "TAMIL"; all interface text is English
-  const movie = language === "TAMIL" ? q.ta_movie : q.movie;
-  const answer = language === "TAMIL" ? q.ta_director : q.director;
+  const quiz = language === "TAMIL" ? QUIZ_TA : QUIZ_EN;
+  const q = quiz[idx % quiz.length];
+  const movie = q.movie;
+  const answer = q.director;
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (guess.trim().toLowerCase() === answer.toLowerCase()) {
+    if (guess.trim().toLowerCase() === (answer || "").toLowerCase()) {
       setResult("Correct!");
     } else {
       setResult("Wrong!");

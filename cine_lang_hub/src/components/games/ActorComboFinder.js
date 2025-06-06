@@ -33,13 +33,19 @@ function ActorComboFinder({ language, onClose }) {
         }
       } catch {}
     }
-    // Fallback: if none (API lacks person search), "demo result"
+    // Fallback: if none, only allow demo for Kollywood in TA mode
     if (matched.length === 0 && actor1.trim() && actor2.trim()) {
-      matched.push({
-        title: actor1 + " & " + actor2,
-        // Allow overview simulated message only for Tamil movie content, otherwise always in English in Kollywood UI
-        overview: "Simulated movie starring both (demo)"
-      });
+      if (language === "TAMIL") {
+        matched.push({
+          title: `${actor1} - ${actor2} கூட்டணி`,
+          overview: "இருவரும் நடித்துள்ள தமிழ் திரைப்பட (செயல்திறன்) உருவாக்கப்பட்டது. (டெமோ பகுதி)"
+        });
+      } else {
+        matched.push({
+          title: actor1 + " & " + actor2,
+          overview: "Simulated movie starring both (demo)"
+        });
+      }
     }
     setResults(matched);
     setLoading(false);
