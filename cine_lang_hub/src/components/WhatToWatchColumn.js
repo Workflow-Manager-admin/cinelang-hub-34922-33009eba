@@ -3,7 +3,12 @@ import { ENGLISH_LABELS, TAMIL_LABELS } from "./i18n";
 import { fetchTrendingMovies, discoverMovies, getMovieDetails } from "../tmdbService";
 
 // PUBLIC_INTERFACE
-function WhatToWatchColumn({ language }) {
+/**
+ * WhatToWatchColumn
+ * @param {string} language - For movie content fetch: 'ENGLISH' or 'TAMIL'
+ * @param {string} [uiLanguage] - For UI labels (default to language if not supplied)
+ */
+function WhatToWatchColumn({ language, uiLanguage }) {
   const [trending, setTrending] = useState([]);
   const [imdbTop, setImdbTop] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +17,8 @@ function WhatToWatchColumn({ language }) {
   const [age, setAge] = useState("");
   const [duration, setDuration] = useState("");
   const [genre, setGenre] = useState("");
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  // Always default interface elements to uiLanguage (for Kollywood section, UI in English)
+  const labels = (uiLanguage || language) === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
 
   // Fetch trending
   useEffect(() => {

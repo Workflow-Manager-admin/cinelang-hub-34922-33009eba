@@ -9,10 +9,16 @@ import FirstMovieEverSeen from "./games/FirstMovieEverSeen";
 import GuessDirector from "./games/GuessDirector";
 
 // PUBLIC_INTERFACE
-function GamesColumn({ language }) {
+/**
+ * GamesColumn
+ * @param {string} language - For in-game content: 'ENGLISH' or 'TAMIL'
+ * @param {string} [uiLanguage] - For the UI labels (default to language if not supplied)
+ */
+function GamesColumn({ language, uiLanguage }) {
   const [activeGame, setActiveGame] = useState(null);
 
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  // Always use UI language for labels/buttons
+  const labels = (uiLanguage || language) === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
   const gameDefs = [
     { key: "guessPoster", label: labels.guessPoster },
     { key: "actorCombo", label: labels.actorCombo },
