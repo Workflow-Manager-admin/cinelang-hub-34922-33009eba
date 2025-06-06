@@ -4,7 +4,8 @@ import { fetchTrendingMovies, getMovieDetails } from "../../tmdbService";
 
 // PUBLIC_INTERFACE
 function GuessPosterGame({ language, onClose }) {
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  // Always use English interface labels, regardless of movie content language
+  const labels = ENGLISH_LABELS;
   const [movie, setMovie] = useState(null);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
@@ -22,10 +23,10 @@ function GuessPosterGame({ language, onClose }) {
     e.preventDefault();
     if (!movie) return;
     if (guess.trim().toLowerCase() === (movie.title || movie.name).toLowerCase()) {
-      setResult(language === "TAMIL" ? "சரியான விடை!" : "Correct!");
+      setResult("Correct!");
       setReveal(true);
     } else {
-      setResult(language === "TAMIL" ? "தவறானது! முயற்சி செய்க." : "Wrong! Try again.");
+      setResult("Wrong! Try again.");
     }
   }
 
@@ -45,13 +46,13 @@ function GuessPosterGame({ language, onClose }) {
             type="text"
             value={guess}
             onChange={e => setGuess(e.target.value)}
-            placeholder={language === "TAMIL" ? "திரைப்படம்" : "Enter movie title"}
+            placeholder="Enter movie title"
             style={{ padding: "8px 12px", borderRadius: 4, border: "1px solid #ccc" }}
           />
           <button className="btn" style={{ padding: "7px 16px", marginLeft: 5 }}>{labels.submit}</button>
         </form>
       )}
-      <div style={{ margin: 5, fontWeight: 500, color: result.startsWith("சரி") || result.startsWith("Correct") ? "lime" : "#ffe83b" }}>
+      <div style={{ margin: 5, fontWeight: 500, color: result.startsWith("Correct") ? "lime" : "#ffe83b" }}>
         {result}
       </div>
       {reveal && <div style={{ marginTop: 7, fontSize: 16 }}>{movie.title || movie.name}</div>}
