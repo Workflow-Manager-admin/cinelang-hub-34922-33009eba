@@ -22,6 +22,7 @@ function WhatToWatchColumn({ language }) {
   // Fetch trending
   useEffect(() => {
     setLoading(true);
+    // Trending Now for Kollywood is now strictly filtered for original_language='ta' by tmdbService
     fetchTrendingMovies(language)
       .then(setTrending)
       .finally(() => setLoading(false));
