@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "../i18n";
+import { ENGLISH_LABELS } from "../i18n";
 import { searchMovies } from "../../tmdbService";
 
 // PUBLIC_INTERFACE
 function FilmDetective({ language, onClose }) {
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  const labels = ENGLISH_LABELS;
   const [actor, setActor] = useState("");
   const [quote, setQuote] = useState("");
   const [year, setYear] = useState("");
@@ -30,21 +30,21 @@ function FilmDetective({ language, onClose }) {
           type="text"
           value={actor}
           onChange={e => setActor(e.target.value)}
-          placeholder={language === "TAMIL" ? "நடிகர் (பைரவன்)" : "Actor (e.g. Tom Hanks)"}
+          placeholder="Actor (e.g. Tom Hanks)"
           style={inputStyle}
         />
         <input
           type="text"
           value={quote}
           onChange={e => setQuote(e.target.value)}
-          placeholder={language === "TAMIL" ? "உரைத்துக் காட்டின்" : "Famous quote"}
+          placeholder="Famous quote"
           style={inputStyle}
         />
         <input
           type="text"
           value={year}
           onChange={e => setYear(e.target.value)}
-          placeholder={language === "TAMIL" ? "வருடம்" : "Year"}
+          placeholder="Year"
           style={inputStyle}
         />
         <button className="btn" style={{ marginTop: 5 }}>{labels.submit}</button>

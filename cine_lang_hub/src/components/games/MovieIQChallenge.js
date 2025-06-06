@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "../i18n";
+import { ENGLISH_LABELS } from "../i18n";
 
 // Demo movie trivia Q&A (year/director -> movie)
 const QUESTIONS = [
@@ -31,7 +31,7 @@ const QUESTIONS = [
 
 // PUBLIC_INTERFACE
 function MovieIQChallenge({ language, onClose }) {
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
@@ -41,9 +41,9 @@ function MovieIQChallenge({ language, onClose }) {
     e.preventDefault();
     const correct = (language === "TAMIL" ? q.ta : q.en).toLowerCase();
     if (guess.trim().toLowerCase() === correct) {
-      setResult(labels.movieIQ + ": " + (language === "TAMIL" ? "சரி!" : "Correct!"));
+      setResult("Correct!");
     } else {
-      setResult(labels.movieIQ + ": " + (language === "TAMIL" ? "தவறானது!" : "Wrong!"));
+      setResult("Wrong!");
     }
   }
   function nextQ() {
@@ -55,28 +55,26 @@ function MovieIQChallenge({ language, onClose }) {
       <h4>{labels.movieIQ}</h4>
       <button className="btn" style={{ fontSize: 13, marginBottom: 5 }} onClick={onClose}>{labels.back}</button>
       <div style={{ margin: 8, fontSize: 17 }}>
-        {language === "TAMIL"
-          ? `வर्षம்: ${q.year} · இயக்குனர்: ${q.director}`
-          : `Year: ${q.year} · Director: ${q.director}`}
+        Year: {q.year} · Director: {q.director}
       </div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={guess}
           onChange={e => setGuess(e.target.value)}
-          placeholder={language === "TAMIL" ? "திரைப்பட பெயர்" : "Movie title"}
+          placeholder="Movie title"
           style={{ padding: "8px 10px", border: "1px solid #bbb", borderRadius: 4 }}
         />
         <button className="btn" style={{ marginLeft: 8 }}>{labels.submit}</button>
       </form>
-      <div style={{ marginTop: 6, fontWeight: 500, color: result.includes("சரி") || result.includes("Correct") ? "lime" : "#ffe83b" }}>{result}</div>
+      <div style={{ marginTop: 6, fontWeight: 500, color: result === "Correct!" ? "lime" : "#ffe83b" }}>{result}</div>
       {result && (
         <>
           <button className="btn" style={{ marginTop: 8, fontSize: 14, padding: "6px 16px" }} onClick={nextQ}>
-            {language === "TAMIL" ? "அடுத்தது" : "Next"}
+            Next
           </button>
           <div style={{ fontSize: 14, marginTop: 5, color: "#89ffe0" }}>
-            {language === "TAMIL" ? <>பதில்: <b>{q.ta}</b></> : <>Answer: <b>{q.en}</b></>}
+            Answer: <b>{language === "TAMIL" ? q.ta : q.en}</b>
           </div>
         </>
       )}

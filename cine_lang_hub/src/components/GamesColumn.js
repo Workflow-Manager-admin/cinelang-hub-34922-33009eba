@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "./i18n";
+import { ENGLISH_LABELS } from "./i18n";
 import GuessPosterGame from "./games/GuessPosterGame";
 import ActorComboFinder from "./games/ActorComboFinder";
 import FilmDetective from "./games/FilmDetective";
@@ -11,14 +11,13 @@ import GuessDirector from "./games/GuessDirector";
 // PUBLIC_INTERFACE
 /**
  * GamesColumn
- * @param {string} language - For in-game content: 'ENGLISH' or 'TAMIL'
- * @param {string} [uiLanguage] - For the UI labels (default to language if not supplied)
+ * @param {string} language - For in-game movie content: 'ENGLISH' or 'TAMIL'
  */
-function GamesColumn({ language, uiLanguage }) {
+function GamesColumn({ language }) {
   const [activeGame, setActiveGame] = useState(null);
 
-  // Always use UI language for labels/buttons
-  const labels = (uiLanguage || language) === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  // Always use ENGLISH_LABELS for UI text, even if movie content is in Tamil in-game
+  const labels = ENGLISH_LABELS;
   const gameDefs = [
     { key: "guessPoster", label: labels.guessPoster },
     { key: "actorCombo", label: labels.actorCombo },

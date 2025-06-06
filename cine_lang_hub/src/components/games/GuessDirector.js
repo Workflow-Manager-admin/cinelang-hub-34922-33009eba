@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "../i18n";
+import { ENGLISH_LABELS } from "../i18n";
 
 // Demo movie/director pairs
 const QUIZ = [
@@ -31,20 +31,21 @@ const QUIZ = [
 
 // PUBLIC_INTERFACE
 function GuessDirector({ language, onClose }) {
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
   const q = QUIZ[idx % QUIZ.length];
+  // Only the movie and director fields may be in Tamil if language === "TAMIL"; all interface text is English
   const movie = language === "TAMIL" ? q.ta_movie : q.movie;
   const answer = language === "TAMIL" ? q.ta_director : q.director;
 
   function handleSubmit(e) {
     e.preventDefault();
     if (guess.trim().toLowerCase() === answer.toLowerCase()) {
-      setResult(language === "TAMIL" ? "சரி!" : "Correct!");
+      setResult("Correct!");
     } else {
-      setResult(language === "TAMIL" ? "தவறானது!" : "Wrong!");
+      setResult("Wrong!");
     }
   }
   function nextQ() {
@@ -56,30 +57,28 @@ function GuessDirector({ language, onClose }) {
       <h4>{labels.guessDirector}</h4>
       <button className="btn" style={{ fontSize: 13, marginBottom: 5 }} onClick={onClose}>{labels.back}</button>
       <div style={{ margin: 8, fontSize: 18 }}>
-        {language === "TAMIL"
-          ? <>திரைப்படம்: <b>{movie}</b></>
-          : <>Movie: <b>{movie}</b></>}
+        Movie: <b>{movie}</b>
       </div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={guess}
           onChange={e => setGuess(e.target.value)}
-          placeholder={language === "TAMIL" ? "இயக்குனர் பெயர்" : "Director name"}
+          placeholder="Director name"
           style={{ padding: "8px 10px", border: "1px solid #bbb", borderRadius: 4 }}
         />
         <button className="btn" style={{ marginLeft: 8 }}>{labels.submit}</button>
       </form>
-      <div style={{ marginTop: 7, fontWeight: 500, color: result === "Correct!" || result === "சரி!" ? "lime" : "#ffe83b" }}>
+      <div style={{ marginTop: 7, fontWeight: 500, color: result === "Correct!" ? "lime" : "#ffe83b" }}>
         {result}
       </div>
       {result && (
         <>
           <button className="btn" style={{ marginTop: 8, fontSize: 14, padding: "6px 16px" }} onClick={nextQ}>
-            {language === "TAMIL" ? "அடுத்தது" : "Next"}
+            Next
           </button>
           <div style={{ fontSize: 14, marginTop: 5, color: "#89ffe0" }}>
-            {language === "TAMIL" ? <>பதில்: <b>{answer}</b></> : <>Answer: <b>{answer}</b></>}
+            Answer: <b>{answer}</b>
           </div>
         </>
       )}

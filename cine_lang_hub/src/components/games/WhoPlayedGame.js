@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "../i18n";
+import { ENGLISH_LABELS } from "../i18n";
 
 // Sample demo character-actor data
 const QUESTIONS = [
@@ -31,7 +31,7 @@ const QUESTIONS = [
 
 // PUBLIC_INTERFACE
 function WhoPlayedGame({ language, onClose }) {
-  const labels = language === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  const labels = ENGLISH_LABELS;
   const [idx, setIdx] = useState(0);
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
@@ -43,9 +43,9 @@ function WhoPlayedGame({ language, onClose }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (guess.trim().toLowerCase() === answer.toLowerCase()) {
-      setResult(language === "TAMIL" ? "சரி!" : "Correct!");
+      setResult("Correct!");
     } else {
-      setResult(language === "TAMIL" ? "தவறானது!" : "Wrong!");
+      setResult("Wrong!");
     }
   }
 
@@ -58,27 +58,27 @@ function WhoPlayedGame({ language, onClose }) {
       <h4>{labels.whoPlayed}</h4>
       <button className="btn" style={{ fontSize: 13, marginBottom: 5 }} onClick={onClose}>{labels.back}</button>
       <div style={{ margin: 8, fontSize: 18, fontWeight: 600 }}>
-        {language === "TAMIL" ? "பாத்திரம்: " : "Character: "} {character}
+        Character: {character}
       </div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           value={guess}
           onChange={e => setGuess(e.target.value)}
-          placeholder={language === "TAMIL" ? "நடிகர் பெயர்" : "Actor name"}
+          placeholder="Actor name"
           style={{ padding: "8px 10px", border: "1px solid #aaa", borderRadius: 4 }}
         />
         <button className="btn" style={{ marginLeft: 7, padding: "7px 18px" }}>{labels.submit}</button>
       </form>
-      <div style={{ marginTop: 7, fontWeight: 500, color: result === "Correct!" || result === "சரி!" ? "lime" : "#ffe83b" }}>{result}</div>
+      <div style={{ marginTop: 7, fontWeight: 500, color: result === "Correct!" ? "lime" : "#ffe83b" }}>{result}</div>
       {result && (
         <button className="btn" style={{ marginTop: 8, padding: "6px 17px", fontSize: 14 }} onClick={nextQ}>
-          {language === "TAMIL" ? "அடுத்தது" : "Next"}
+          Next
         </button>
       )}
       {result && (
         <div style={{ fontSize: 14, marginTop: 6, color: "#89ffe0" }}>
-          {language === "TAMIL" ? <>உண்மையான பதில்: <b>{answer}</b></> : <>Answer: <b>{answer}</b></>}
+          Answer: <b>{answer}</b>
         </div>
       )}
     </div>

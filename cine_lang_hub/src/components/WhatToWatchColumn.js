@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ENGLISH_LABELS, TAMIL_LABELS } from "./i18n";
-import { fetchTrendingMovies, discoverMovies, getMovieDetails } from "../tmdbService";
+import { ENGLISH_LABELS } from "./i18n";
+import { fetchTrendingMovies, discoverMovies } from "../tmdbService";
 
 // PUBLIC_INTERFACE
 /**
  * WhatToWatchColumn
- * @param {string} language - For movie content fetch: 'ENGLISH' or 'TAMIL'
- * @param {string} [uiLanguage] - For UI labels (default to language if not supplied)
+ * @param {string} language - For movie content fetch: 'ENGLISH' or 'TAMIL' (movie content only; UI is always English)
  */
-function WhatToWatchColumn({ language, uiLanguage }) {
+function WhatToWatchColumn({ language }) {
   const [trending, setTrending] = useState([]);
   const [imdbTop, setImdbTop] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,8 +16,8 @@ function WhatToWatchColumn({ language, uiLanguage }) {
   const [age, setAge] = useState("");
   const [duration, setDuration] = useState("");
   const [genre, setGenre] = useState("");
-  // Always default interface elements to uiLanguage (for Kollywood section, UI in English)
-  const labels = (uiLanguage || language) === "TAMIL" ? TAMIL_LABELS : ENGLISH_LABELS;
+  // Always use ENGLISH_LABELS for interface elements
+  const labels = ENGLISH_LABELS;
 
   // Fetch trending
   useEffect(() => {
@@ -54,15 +53,15 @@ function WhatToWatchColumn({ language, uiLanguage }) {
     }).finally(() => setFamilyLoading(false));
   }
 
-  // Genre map for demo (subset)
+  // Genre map for demo (subset) - labels always English
   const imdbGenres = [
-    { value: "28", label: language === "TAMIL" ? "அதிரடித் திரைப்படம்" : "Action" },
-    { value: "35", label: language === "TAMIL" ? "நகைச்சுவை" : "Comedy" },
-    { value: "16", label: language === "TAMIL" ? "அனிமேஷன்" : "Animation" },
-    { value: "10751", label: language === "TAMIL" ? "குடும்பம்" : "Family" },
-    { value: "18", label: language === "TAMIL" ? "திரமடை" : "Drama" },
-    { value: "27", label: language === "TAMIL" ? "திகில்" : "Horror" },
-    { value: "10749", label: language === "TAMIL" ? "காதல்" : "Romance" }
+    { value: "28", label: "Action" },
+    { value: "35", label: "Comedy" },
+    { value: "16", label: "Animation" },
+    { value: "10751", label: "Family" },
+    { value: "18", label: "Drama" },
+    { value: "27", label: "Horror" },
+    { value: "10749", label: "Romance" }
   ];
 
   return (
@@ -81,10 +80,10 @@ function WhatToWatchColumn({ language, uiLanguage }) {
 
       <h3 style={{ marginTop: 28 }}>{labels.familyNight}</h3>
       <form onSubmit={handleFamilyNight} style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <input name="age" type="number" placeholder={language === "TAMIL" ? "வயது" : "Age"} min={3} max={99} value={age} onChange={e => setAge(e.target.value)} style={inputStyleMini} />
-        <input name="duration" type="number" placeholder={language === "TAMIL" ? "நிமிடங்கள்" : "Minutes"} value={duration} onChange={e => setDuration(e.target.value)} style={inputStyleMini} />
+        <input name="age" type="number" placeholder="Age" min={3} max={99} value={age} onChange={e => setAge(e.target.value)} style={inputStyleMini} />
+        <input name="duration" type="number" placeholder="Minutes" value={duration} onChange={e => setDuration(e.target.value)} style={inputStyleMini} />
         <select name="genre" value={genre} onChange={e => setGenre(e.target.value)} style={inputStyleMini}>
-          <option value="">{language === "TAMIL" ? "பட வகை" : "Genre"}</option>
+          <option value="">Genre</option>
           {imdbGenres.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
         </select>
         <button className="btn" style={{ padding: "8px 19px" }}>{labels.submit}</button>

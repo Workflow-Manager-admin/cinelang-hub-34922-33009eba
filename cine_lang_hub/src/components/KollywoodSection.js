@@ -15,11 +15,12 @@ function KollywoodSection({ onBack }) {
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 32 }}>
         <div style={{ flex: "2 1 320px", minWidth: 320 }}>
           <h2 className="subtitle">{ENGLISH_LABELS.kollywood}</h2>
-          <WhatToWatchColumn language="TAMIL" uiLanguage="ENGLISH" />
+          {/* UI in English, only movie content in Tamil */}
+          <WhatToWatchColumn language="TAMIL" />
         </div>
         <div style={{ flex: "1 1 250px", minWidth: 230 }}>
           <h3 className="subtitle">{ENGLISH_LABELS.games}</h3>
-          <GamesColumn language="TAMIL" uiLanguage="ENGLISH" />
+          <GamesColumn language="TAMIL" /> {/* Games UI in English, movie clues/answers can be Tamil */}
         </div>
       </div>
     </div>
