@@ -14,14 +14,6 @@ const LANGUAGE_CODES = {
 };
 
 /**
- * Fetch trending movies for a region/language.
- * For Kollywood (TAMIL), only strictly return movies whose original_language is Tamil.
- * @param {'ENGLISH'|'TAMIL'} langRegion Either 'ENGLISH' or 'TAMIL'
- * @param {string} [mediaType] Optional: 'movie' or 'tv'
- * @param {string} [timeWindow] Optional: 'day' or 'week'
- * @returns {Promise<Array>} Array of movie objects
- */
-/**
  * PUBLIC_INTERFACE
  * Fetch trending movies for a region/language.
  * For Kollywood (TAMIL), only strictly return movies whose original_language is Tamil.
@@ -101,4 +93,42 @@ export async function getMovieDetails(movieId, langRegion = 'ENGLISH') {
   const resp = await fetch(url);
   if (!resp.ok) throw new Error('Failed to fetch movie details');
   return resp.json();
+}
+
+// PUBLIC_INTERFACE
+/**
+ * Fetch prioritized Kollywood trending titles, searching TMDb for each one (Tamil language), else returns placeholders if not present.
+ * Used for Trending Now section in Kollywood (TAMIL) column only.
+ * @param {string[]} titles  Array of prioritized Tamil movie titles (e.g., ['Thug Life', ...])
+ * @param {object} [placeholderProps] Optional props to use on fallback (default: adds title and 'Coming Soon')
+ * @returns {Promise<Array>} Ordered list of up to titles.length TMDb movie objects (movie or placeholder)
+ */
+export async function getKollywoodPriorityTrending(titles, placeholderProps = {}) {
+  const results = [];
+  for (const title of titles) {
+    let found = [];
+    try {
+      found = await searchMovies(title, 'TAMIL');
+    } catch { found = []; }
+    // Exact match preferred, fallback to contains substring (Tamil only)
+    let movie = (
+      found.find(m => (m.title || m.name || '').trim().toLowerCase() === title.trim().toLowerCase()) ||
+      found.find(m => (m.title || m.name || '').toLowerCase().includes(title.trim().toLowerCase()))
+    );
+    if (movie) {
+      results.push(movie);
+    } else {
+      // Placeholder: structure nearly matches MovieCard
+      results.push({
+        id: 'placeholder-' + title.replace(/\\s/g, '-'),
+        title,
+        poster_path: null,
+        overview: 'Coming Soon',
+        release_date: '',
+        isPlaceholder: true,
+        ...placeholderProps
+      });
+    }
+  }
+  return results;
 }

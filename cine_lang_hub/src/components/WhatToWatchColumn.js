@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ENGLISH_LABELS } from "./i18n";
-import { fetchTrendingMovies, discoverMovies } from "../tmdbService";
+import { fetchTrendingMovies, discoverMovies, getKollywoodPriorityTrending } from "../tmdbService";
 
 // PUBLIC_INTERFACE
 /**
@@ -22,10 +22,33 @@ function WhatToWatchColumn({ language }) {
   // Fetch trending
   useEffect(() => {
     setLoading(true);
-    // Trending Now for Kollywood is now strictly filtered for original_language='ta' by tmdbService
-    fetchTrendingMovies(language)
-      .then(setTrending)
-      .finally(() => setLoading(false));
+
+    // Kollywood (Tamil): show prioritized trending with fallback for missing titles
+    const PRIORITY_TITLES = ["Thug Life", "Retro", "Tourist Family"];
+    if (language === "TAMIL") {
+      // Fetch both priority and normal trending, then merge for Trending Now
+      Promise.all([
+        getKollywoodPriorityTrending(PRIORITY_TITLES),
+        fetchTrendingMovies("TAMIL")
+      ]).then(([priorityMovies, trendingRest]) => {
+        // Remove any duplicates of the priority movies (by id or title) from trendingRest
+        const prioIds = new Set(priorityMovies.map(m => m && m.id));
+        const prioTitles = new Set(priorityMovies.map(m => (m.title || m.name || '').toLowerCase()));
+        const restFiltered = (trendingRest || []).filter(
+          m => m && !prioIds.has(m.id) && !prioTitles.has((m.title || m.name || '').toLowerCase())
+        );
+        setTrending([
+          ...priorityMovies,
+          ...restFiltered.slice(0, Math.max(0, 6 - priorityMovies.length))
+        ]);
+      }).finally(() => setLoading(false));
+    } else {
+      // Hollywood/English - normal trending logic
+      fetchTrendingMovies(language)
+        .then(arr => setTrending((arr || []).slice(0, 6)))
+        .finally(() => setLoading(false));
+    }
+
     // Fetch IMDb Top N for demo (sorted by vote_average, popular & min votes > 200 for quality)
     discoverMovies(language, { sort_by: "vote_average.desc", year: undefined, genre: undefined })
       .then((arr) => setImdbTop(arr.filter((m) => m.vote_count > 200).slice(0, 8)));
@@ -110,18 +133,40 @@ function MovieCard({ movie, language, large }) {
   if (!movie) return null;
   const title = movie.title || movie.name;
   const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w200${movie.poster_path}` : null;
+  const isPlaceholder = !!movie.isPlaceholder;
   return (
     <div style={{
       border: "1px solid var(--border-color)",
-      background: "rgba(255,255,255,0.015)",
+      background: isPlaceholder ? "rgba(255,255,255,0.025)" : "rgba(255,255,255,0.015)",
       borderRadius: 8,
       padding: 8,
       width: large ? 175 : 116,
       minHeight: large ? 250 : 180,
       textAlign: "center",
-      fontSize: large ? 17 : 14
+      fontSize: large ? 17 : 14,
+      opacity: isPlaceholder ? 0.73 : 1
     }}>
-      {poster ? <img src={poster} style={{ width: "100%", borderRadius: 5, filter: "contrast(1.2)" }} alt={title} /> : null}
+      {isPlaceholder
+        ? (
+          <div style={{
+            width: "100%",
+            minHeight: large ? 140 : 60,
+            background: "linear-gradient(120deg, #202050 50%, #522045 100%)",
+            borderRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#bbbbcc",
+            fontSize: large ? 21 : 15,
+            fontWeight: 600,
+            marginBottom: 6
+          }}>
+            Coming Soon
+          </div>
+        ) : (
+          poster ? <img src={poster} style={{ width: "100%", borderRadius: 5, filter: "contrast(1.2)" }} alt={title} /> : null
+        )
+      }
       <div style={{
         marginTop: 7, fontWeight: 600,
         color: "#fff",
@@ -129,7 +174,7 @@ function MovieCard({ movie, language, large }) {
         textOverflow: "ellipsis",
         whiteSpace: "nowrap"
       }}>{title}</div>
-      <div style={{ fontSize: 12, color: "#bbbbbb" }}>{(movie.release_date || "").slice(0, 4)}</div>
+      <div style={{ fontSize: 12, color: "#bbbbbb" }}>{isPlaceholder ? "" : (movie.release_date || "").slice(0, 4)}</div>
     </div>
   );
 }
