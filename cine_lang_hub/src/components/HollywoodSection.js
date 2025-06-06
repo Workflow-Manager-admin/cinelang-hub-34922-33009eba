@@ -8,20 +8,25 @@ import GamesColumn from "./GamesColumn";
  * HollywoodSection component ("ENGLISH")
  */
 function HollywoodSection({ onBack }) {
-  const [view, setView] = useState("main");
-
+  // Only one main view for this section
   return (
     <div>
       <button className="btn" onClick={onBack} style={{ marginBottom: 16 }}>{ENGLISH_LABELS.back}</button>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 32 }}>
-        <div style={{ flex: "2 1 320px", minWidth: 320 }}>
-          <h2 className="subtitle">{ENGLISH_LABELS.hollywood}</h2>
+      <div className="section-main">
+        <section className="section-col">
+          <div className="section-header">
+            <span role="img" aria-label="film">🍿</span>{ENGLISH_LABELS.whatToWatch}
+          </div>
+          <hr className="section-divider" />
           <WhatToWatchColumn language="ENGLISH" />
-        </div>
-        <div style={{ flex: "1 1 250px", minWidth: 230 }}>
-          <h3 className="subtitle">{ENGLISH_LABELS.games}</h3>
+        </section>
+        <section className="section-col section-col--games">
+          <div className="section-header">
+            <span role="img" aria-label="games">🎲</span>{ENGLISH_LABELS.games}
+          </div>
+          <hr className="section-divider" />
           <GamesColumn language="ENGLISH" />
-        </div>
+        </section>
       </div>
     </div>
   );

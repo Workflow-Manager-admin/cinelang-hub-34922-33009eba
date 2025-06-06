@@ -19,6 +19,110 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--base-dark);
+}
+
+/* Main responsive two-column section container */
+.section-main {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 32px;
+  margin-top: 0;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .section-main {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.section-col {
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid var(--border-color);
+  border-radius: 13px;
+  padding: 24px 20px;
+  box-shadow: 0 1px 9px 0 rgba(0,0,22,0.08);
+  margin-bottom: 0;
+  /* Shrinks with window, grows appropriately */
+  flex: 1 1 340px;
+  min-width: 0;
+  min-height: 120px;
+  transition: background 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-col--games {
+  flex: 0.95 1 250px;
+  background: rgba(244,59,247,0.055);
+}
+
+/* Main headings for each card/column */
+.section-header {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--base-light);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 14px rgba(172,255,247,0.045);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1.6px dashed var(--border-color);
+  margin: 16px 0 10px 0;
+  width: 100%;
+}
+
+/* Flex container for movie horizontal scroll sections */
+.movies-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+/* Individual compact card for movie/game preview */
+.card {
+  border: 1px solid var(--border-color);
+  background: #222243;
+  border-radius: 11px;
+  padding: 9px 11px;
+  min-width: 115px;
+  min-height: 150px;
+  box-shadow: 0 0.6px 5px #0c0c3080;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.98rem;
+  color: var(--text-color);
+}
+
+@media (max-width: 700px) {
+  .section-col,
+  .section-col--games {
+    padding: 16px 9px;
+    font-size: 0.97rem;
+  }
+
+  .section-header {
+    font-size: 1.06rem;
+    padding: 0 1px;
+  }
+  .card {
+    min-width: 89px;
+    padding: 6px 6px;
+  }
 }
 
 .navbar {

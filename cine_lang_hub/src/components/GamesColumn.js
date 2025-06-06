@@ -44,9 +44,20 @@ function GamesColumn({ language }) {
   return (
     <div>
       {!activeGame && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 13 }}>
           {gameDefs.map((g) => (
-            <button key={g.key} className="btn" style={{ background: "#f43bf7", color: "#fff" }} onClick={() => setActiveGame(g.key)}>
+            <button
+              key={g.key}
+              className="btn"
+              style={{
+                background: "#f43bf7",
+                color: "#fff",
+                fontWeight: 500,
+                fontSize: "1.07rem",
+                borderRadius: "6px"
+              }}
+              onClick={() => setActiveGame(g.key)}
+            >
               {g.label}
             </button>
           ))}

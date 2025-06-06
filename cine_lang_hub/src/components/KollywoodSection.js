@@ -12,16 +12,21 @@ function KollywoodSection({ onBack }) {
   return (
     <div>
       <button className="btn" onClick={onBack} style={{ marginBottom: 16 }}>{ENGLISH_LABELS.back}</button>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 32 }}>
-        <div style={{ flex: "2 1 320px", minWidth: 320 }}>
-          <h2 className="subtitle">{ENGLISH_LABELS.kollywood}</h2>
-          {/* UI in English, only movie content in Tamil */}
+      <div className="section-main">
+        <section className="section-col">
+          <div className="section-header">
+            <span role="img" aria-label="film">🎬</span>{ENGLISH_LABELS.kollywood}
+          </div>
+          <hr className="section-divider" />
           <WhatToWatchColumn language="TAMIL" />
-        </div>
-        <div style={{ flex: "1 1 250px", minWidth: 230 }}>
-          <h3 className="subtitle">{ENGLISH_LABELS.games}</h3>
-          <GamesColumn language="TAMIL" /> {/* Games UI in English, movie clues/answers can be Tamil */}
-        </div>
+        </section>
+        <section className="section-col section-col--games">
+          <div className="section-header">
+            <span role="img" aria-label="games">🎲</span>{ENGLISH_LABELS.games}
+          </div>
+          <hr className="section-divider" />
+          <GamesColumn language="TAMIL" />
+        </section>
       </div>
     </div>
   );

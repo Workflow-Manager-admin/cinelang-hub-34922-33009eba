@@ -66,31 +66,40 @@ function WhatToWatchColumn({ language }) {
 
   return (
     <div>
-      <h3 style={{ marginTop: 0 }}>{labels.trending}</h3>
-      <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
-        {loading ? <span>{labels.loading}</span> : trending.slice(0, 6).map((m) => (
-          <MovieCard movie={m} key={m.id} language={language} />
-        ))}
+      {/* Trends Card */}
+      <div>
+        <div className="section-header" style={{marginTop:0,fontSize:"1.08rem"}}>{labels.trending}</div>
+        <div className="movies-row">
+          {loading ? <span>{labels.loading}</span>
+            : trending.slice(0, 6).map((m) =>
+              <MovieCard movie={m} key={m.id} language={language} />)}
+        </div>
       </div>
 
-      <h3 style={{ marginTop: 28 }}>{labels.imdbTop}</h3>
-      <div style={{ display: "flex", gap: 8, overflowX: "auto" }}>
-        {imdbTop.length ? imdbTop.map((m) => <MovieCard movie={m} key={m.id} language={language} />) : <span>{labels.loading}</span>}
+      {/* IMDb Top Picks */}
+      <div>
+        <div className="section-header" style={{marginTop: 22, fontSize:"1.08rem"}}>{labels.imdbTop}</div>
+        <div className="movies-row">
+          {imdbTop.length ? imdbTop.map((m) => <MovieCard movie={m} key={m.id} language={language} />) : <span>{labels.loading}</span>}
+        </div>
       </div>
 
-      <h3 style={{ marginTop: 28 }}>{labels.familyNight}</h3>
-      <form onSubmit={handleFamilyNight} style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-        <input name="age" type="number" placeholder="Age" min={3} max={99} value={age} onChange={e => setAge(e.target.value)} style={inputStyleMini} />
-        <input name="duration" type="number" placeholder="Minutes" value={duration} onChange={e => setDuration(e.target.value)} style={inputStyleMini} />
-        <select name="genre" value={genre} onChange={e => setGenre(e.target.value)} style={inputStyleMini}>
-          <option value="">Genre</option>
-          {imdbGenres.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
-        </select>
-        <button className="btn" style={{ padding: "8px 19px" }}>{labels.submit}</button>
-      </form>
-      <div style={{ minHeight: 90, marginTop: 8 }}>
-        {familyLoading && <span>{labels.loading}</span>}
-        {familyRec && <MovieCard movie={familyRec} language={language} large />}
+      {/* Family Night Generator */}
+      <div style={{marginTop:24}}>
+        <div className="section-header" style={{fontSize:"1.08rem"}}>{labels.familyNight}</div>
+        <form onSubmit={handleFamilyNight} style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <input name="age" type="number" placeholder="Age" min={3} max={99} value={age} onChange={e => setAge(e.target.value)} style={inputStyleMini} />
+          <input name="duration" type="number" placeholder="Minutes" value={duration} onChange={e => setDuration(e.target.value)} style={inputStyleMini} />
+          <select name="genre" value={genre} onChange={e => setGenre(e.target.value)} style={inputStyleMini}>
+            <option value="">Genre</option>
+            {imdbGenres.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+          </select>
+          <button className="btn" style={{ padding: "8px 19px" }}>{labels.submit}</button>
+        </form>
+        <div style={{ minHeight: 90, marginTop: 8 }}>
+          {familyLoading && <span>{labels.loading}</span>}
+          {familyRec && <MovieCard movie={familyRec} language={language} large />}
+        </div>
       </div>
     </div>
   );
